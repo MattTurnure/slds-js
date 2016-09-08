@@ -1,0 +1,12 @@
+{
+    "undef": true,
+    "unused": true,
+    "predef": ["document", "window", "moment"],
+    "esversion": 6,
+    "browser": true,
+    "devel": true,
+    "node": true,
+    "worker": true,
+    "maxdepth": 8,
+    "maxcomplexity": 6
+}

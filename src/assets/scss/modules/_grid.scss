@@ -1,0 +1,157 @@
+$grid-debug: true;
+$grid-debug-col: rgba(200,200,200,0.5);
+$grid-breakpoints: (
+    small: 35.5em, // 600px
+    medium: 50em,  // 800px
+    large: 64em,   // 1024px
+    x-large: 75em  // 1200px
+);
+
+%clearfix {
+    &:before,
+    &:after {
+        content: " ";
+        display: table;
+    }
+
+    &:after {
+        clear: both;
+    }
+}
+
+.container {
+    @extend %clearfix;
+
+    padding: 0 1rem;
+    position: relative;
+}
+
+.grid,
+.layout,
+.row {
+    @include setType(16, 0);
+
+    align-content: flex-start;
+    align-items: stretch;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    margin: 0 -1rem;
+
+    .col {
+        flex: 1 0 100%;
+        padding: 0 1rem;
+
+        @if $grid-debug == true {
+            background-color: $grid-debug-col;
+
+            &:nth-child(even) {
+                background-color: darken($grid-debug-col, 20%);
+            }
+        }
+    }
+
+    @include mediaQuery(map-get($grid-breakpoints, small)) {
+        &.auto {
+            margin: 0 -1rem;
+
+            .col {
+                flex-basis: auto;
+            }
+        }
+
+        &.inline {
+            margin: 0 -1rem;
+
+            .col {
+                flex: inherit;
+            }
+        }
+
+        &.sixty-forty {
+            margin: 0 -1rem;
+
+            .col {
+                flex-basis: 60%;
+
+                @if $grid-debug == true {
+                    background-color: $grid-debug-col;
+                }
+
+                &:last-child {
+                    flex-basis: 40%;
+
+                    @if $grid-debug == true {
+                        background-color: darken($grid-debug-col, 20%);
+                    }
+                }
+            }
+        }
+
+        &.forty-sixty {
+            margin: 0 -1rem;
+
+            .col {
+                flex-basis: 40%;
+
+                &:last-child {
+                    flex-basis: 60%;
+                }
+            }
+        }
+    }
+
+    &.halves {
+        .col {
+            flex-basis: 50%;
+
+            &:last-child {
+                flex-basis: 50%;
+            }
+        }
+    }
+
+    &.thirds {
+        .col {
+            flex-basis: 33.3333%;
+            max-width: 33.3333%;
+
+            &:last-child {
+                flex-basis: 33.3333%;
+            }
+        }
+    }
+
+    &.quarters {
+        .col {
+            flex-basis: 25%;
+            max-width: 25%;
+
+            &:last-child {
+                flex-basis: 25%;
+            }
+        }
+    }
+
+    &.fifths {
+        .col {
+            flex-basis: 20%;
+            max-width: 20%;
+
+            &:last-child {
+                flex-basis: 20%;
+            }
+        }
+    }
+
+    &.sixths {
+        .col {
+            flex-basis: 16.66666666666667%;
+            max-width: 16.66666666666667%;
+
+            &:last-child {
+                flex-basis: 16.66666666666667%;
+            }
+        }
+    }
+}

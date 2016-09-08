@@ -1,0 +1,22 @@
+{% extends "_layout.html" %}
+{% block content %}
+    <div class="slds-page-header" role="banner">
+        <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate">
+                <div class="slds-media slds-no-space slds-grow">
+                    <div class="slds-media__figure">
+                        <svg aria-hidden="true" class="slds-icon slds-icon-standard-user">
+                            <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#user"></use>
+                        </svg>
+                    </div>
+                    <div class="slds-media__body">
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate" title="this should match the Record Title">SLDS JS</h1>
+                        <p>JavaScript functionality for Salesforce Lightning Design System.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include "slds-calendar/calendar.html" %}
+{% endblock %}

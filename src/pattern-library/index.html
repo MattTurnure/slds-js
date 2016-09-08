@@ -1,0 +1,30 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+    <main class="wrapper-main" id="wrapper-main">
+        <header class="header-main">
+            <div class="container">
+                <h1 class="heading">Pattern Library</h1>
+                <a class="nav-menu-btn" id="nav-menu-btn" href="#nav" role="button">
+                    <span class="sr-only">Menu</span>
+                </a>
+            </div>
+        </header>
+        {% include "pattern-library/sections/typography.html" %}
+        {% include "pattern-library/sections/layouts.html" %}
+        {% include "pattern-library/sections/grids.html" %}
+        {% include "pattern-library/sections/card-grid.html" %}
+        {% include "pattern-library/sections/forms.html" %}
+        {% include "pattern-library/sections/buttons.html" %}
+    </main>
+
+    <nav class="nav-main" id="nav-main">
+        <ul class="items">
+            {% for section in sections %}
+                <li class="item">
+                    <a class="anchor" href="#{{ section.url }}">{{ section.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

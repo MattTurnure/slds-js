@@ -1,0 +1,7 @@
+.header-main {
+    background-color: rgba($color-bright, 0.85);
+
+    .heading {
+        @include setType(24);
+    }
+}

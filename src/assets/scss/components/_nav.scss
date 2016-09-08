@@ -1,0 +1,105 @@
+.nav-main {
+    position: fixed;
+    top: -240px;
+    overflow: hidden;
+    transition: top 0.2s ease-in-out;
+    width: 100%;
+    z-index: 5;
+
+    .items {
+        list-style: none;
+        padding: 0;
+    }
+
+    .item {
+        display: block;
+    }
+
+    .anchor {
+        display: block;
+        color: $color-anchor;
+        padding: 0 1rem;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            color: darken($color-anchor, 10%);;
+        }
+    }
+
+    .active {
+        .anchor {
+            border-color: $color-anchor;
+        }
+    }
+
+    &.transition {
+        opacity: 0;
+    }
+
+    &.expanded {
+        opacity: 1;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+
+    @include mediaQuery(map-get($grid-breakpoints, medium)) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 25%;
+        z-index: 3;
+
+        .anchor {
+            color: $color-anchor;
+        }
+    }
+}
+
+.nav-menu-btn {
+    border-top: 4px solid $color-anchor;
+    border-bottom: 4px solid $color-anchor;
+    cursor: pointer;
+    height: 22px;
+    width: $typesetter-baseline + px;
+    position: absolute;
+    top: $typesetter-baseline + px;
+    right: 1rem;
+    transition: all 0.2s ease-in-out;
+    z-index: 2;
+
+    &:before {
+        background-color: $color-anchor;
+        content: " ";
+        height: 4px;
+        width: $typesetter-baseline + px;
+        margin-top: -2px;
+        position: absolute;
+        top: 50%;
+        transition: all 0.3s ease-in-out;
+    }
+
+    &:after {
+        background-color: $color-anchor;
+        content: " ";
+        height: 4px;
+        width: $typesetter-baseline + px;
+        margin-top: -2px;
+        position: absolute;
+        top: 50%;
+    }
+
+    &.expanded {
+        border: 0;
+        transform: rotate(45deg);
+
+        &:before {
+            transform: rotate(90deg);
+        }
+    }
+
+    @include mediaQuery(map-get($grid-breakpoints, medium)) {
+        top: -999em;
+    }
+}

@@ -1,0 +1,31 @@
+.clearfix {
+    &:before,
+    &:after {
+        content: " ";
+        display: table;
+    }
+
+    &:after {
+        clear: both;
+    }
+}
+
+.anchor {
+    color: $color-anchor;
+
+    &:hover,
+    &:focus {
+        color: darken($color-anchor, 10%);
+    }
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sr-only {
+    position: absolute;
+    left: -9999em;
+}

@@ -1,0 +1,104 @@
+%field-default {
+    appearance: none;
+    background-color: $color-bright;
+    border: 1px solid $color-border;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 6px 0;
+    padding: 0 0.5rem;
+    width: 100%;
+
+    &:focus {
+        box-shadow: 0 0 4px $color-border;
+        outline: none;
+    }
+
+    @include mediaQuery(map-get($grid-breakpoints, small)) {
+        width: auto;
+    }
+}
+
+legend {
+    @extend h3;
+
+    + p {
+        margin-top: 0;
+    }
+}
+
+label {
+    margin: 0;
+}
+
+input[type="text"] {
+    @extend %field-default;
+
+    height: 36px;
+}
+
+textarea {
+    @extend %field-default;
+
+    height: 226px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+select {
+    @extend %field-default;
+
+    background:$color-bright url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAYAAADDl76dAAAAlElEQVQYV2OMjIwM+M/AkM+AAzAyMExcvnz5Blzy6OJA9QwMQEMPMDAy2mNo+v//INAwB2INA6kDGxgQECDAwcn5gJGRkR+m+f///x9/fP+usGHDhg8kGwjSEBUVZQD0+nmYZqBNhsuWLbtAimFwF8I0Ab1eAPR6P8P//4VAr04g1TAMA0ECEVFRCSuWLVtAjmEgPQAy4ioHmgDrRgAAAABJRU5ErkJggg==) no-repeat 100% 50%;
+    height: 36px;
+    padding-right: 36px;
+}
+
+.label {
+    @extend label;
+}
+
+.required {
+    color: $color-state-error;
+}
+
+.checkbox,
+.radio {
+    margin: 24px 0;
+
+    input {
+        margin: 0 0.25rem 0 0;
+    }
+
+    label {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .label {
+        display: block;
+    }
+
+    .item {
+        @extend .clearfix;
+
+        display: block;
+    }
+
+    &.inline {
+        .item {
+            display: inline-block;
+            margin-right: 1.25rem;
+        }
+    }
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.error {
+    @include setType(14, 0);
+
+    color: $color-state-error;
+    display: block;
+    font-style: italic;
+}

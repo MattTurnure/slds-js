@@ -1,0 +1,146 @@
+button {
+    @include setType(16, 0);
+    @extend .anchor;
+
+    appearance: none;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0;
+}
+
+*[role="button"] {
+    @extend button;
+}
+
+.btn {
+    @extend .truncate;
+
+    background-color: $color-button-default-bg;
+    border: 1px solid darken($color-state-active, 10%);
+    border-radius: $button-border-radius;
+    color: $color-state-active;
+    display: block;
+    margin: 24px 0;
+    min-width: 0;
+    padding: 11px 1rem;
+    text-align: center;
+    width: 100%;
+
+    &:hover,
+    &:focus {
+        border-color: darken($color-state-active, 10%);
+        color: darken($color-state-active, 10%);
+    }
+
+    &:focus {
+        box-shadow: 0 0 4px $color-state-active;
+        outline: none;
+    }
+
+    &.btn-warning {
+        background-color: $color-state-warning;
+        border-color: $color-state-warning;
+        color: $color-bright;
+
+        &:hover,
+        &:focus {
+            background-color: darken($color-state-warning, 10%);
+        }
+
+        &:focus {
+            box-shadow: 0 0 4px darken($color-state-warning, 10%);
+        }
+    }
+
+    &.btn-danger {
+        background-color: $color-state-error;
+        border-color: $color-state-error;
+        color: $color-bright;
+
+        &:hover,
+        &:focus {
+            background-color: darken($color-state-error, 10%);
+        }
+
+        &:focus {
+            box-shadow: 0 0 4px darken($color-state-error, 10%);
+        }
+    }
+
+    &.btn-success {
+        background-color: $color-state-success;
+        border-color: $color-state-success;
+        color: $color-bright;
+
+        &:hover,
+        &:focus {
+            background-color: darken($color-state-success, 10%);
+        }
+
+        &:focus {
+            box-shadow: 0 0 4px darken($color-state-success, 10%);
+        }
+    }
+
+    @include mediaQuery(map-get($grid-breakpoints, small)) {
+        width: auto;
+    }
+}
+
+.radio-select,
+.checkbox-select {
+    @extend .clearfix;
+    @extend .truncate;
+
+    border-radius: $button-border-radius;
+    display: flex;
+    margin: 24px 0;
+    overflow: hidden;
+
+    .option-label {
+        @extend .btn;
+
+        border-radius: 0;
+        border-right: 0;
+        cursor: pointer;
+        margin: 0;
+
+        &:hover,
+        &:focus {
+            background-color: $color-button-default-bg;
+        }
+    }
+
+    .option {
+        float: left;
+
+        &:first-child {
+            .option-label {
+                border-radius: $button-border-radius 0 0 $button-border-radius;
+            }
+        }
+
+        &:last-child {
+            .option-label {
+                border-radius: 0 $button-border-radius $button-border-radius 0;
+                border-right: 1px solid;
+            }
+        }
+    }
+
+    .option-control {
+        appearance: none;
+        margin: 0;
+        position: absolute;
+        left: -9999em;
+
+        &:checked {
+            + .option-label {
+                background-color: $color-state-active;
+                color: $color-bright;
+            }
+        }
+    }
+}

@@ -1,21 +1,21 @@
 {
-  "name": "basic-prototype-boilerplate",
+  "name": "slds-js",
   "version": "1.0.0",
-  "description": "Simple gulp boilerplate for basic static prototyping",
+  "description": "JavaScript functionality for Salesforce Lightning Design System",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CodeScience/basic-prototype-boilerplate.git"
+    "url": "git+https://github.com/MattTurnure/slds-js.git"
   },
-  "author": "",
+  "author": "Matt Turnure",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CodeScience/basic-prototype-boilerplate/issues"
+    "url": "https://github.com/MattTurnure/slds-js/issues"
   },
-  "homepage": "https://github.com/CodeScience/basic-prototype-boilerplate#readme",
+  "homepage": "https://github.com/MattTurnure/slds-js#readme",
   "devDependencies": {
     "@salesforce-ux/design-system": "^2.1.2",
     "autoprefixer": "^6.4.0",
@@ -34,6 +34,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^2.0.0",
     "imagemin-pngquant": "^5.0.0",
+    "moment": "^2.14.1",
     "prismjs": "^1.5.1",
     "pump": "^1.0.1"
   }

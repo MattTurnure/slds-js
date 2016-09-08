@@ -1,0 +1,105 @@
+<section id="forms">
+    <header class="container page-header">
+        <h2>Forms</h2>
+    </header>
+
+    <article class="container">
+        <form action="">
+            <fieldset class="field-group">
+                <legend>Standard Fields</legend>
+
+                <p>Fields marked with an <abbr class="required" title="Required">*</abbr> are required.</p>
+
+                <div class="form-group">
+                    <label for="text-input"><abbr class="required" title="Required">*</abbr> Text Input</label>
+                    <input id="text-input" class="form-control" type="text">
+                    <span class="error">Please complete this field</span>
+                </div>
+                <div class="form-group">
+                    <label for="text-area">Textarea</label>
+                    <textarea id="text-area" class="form-control" rows="8" cols="40"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="select">Select</label>
+                    <select name="select" id="select">
+                        <option value="">Select one</option>
+                        <option value="01">item 01</option>
+                        <option value="02">item 02</option>
+                        <option value="03">item 03</option>
+                    </select>
+                </div>
+                <div class="checkbox inline">
+                    <h3 class="label">Inline checkboxes</h3>
+                    <div class="item">
+                        <label>
+                            <input type="checkbox">
+                            Required?
+                        </label>
+                    </div>
+                    <div class="item">
+                        <label>
+                            <input type="checkbox">
+                            Hidden?
+                        </label>
+                    </div>
+                </div>
+                <div class="radio">
+                    <h3 class="label">Radio buttons</h3>
+                    <div class="item">
+                        <label>
+                            <input type="radio" name="radio" checked>
+                            Yes
+                        </label>
+                    </div>
+                    <div class="item">
+                        <label>
+                            <input type="radio" name="radio">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="field-group">
+                <legend>Custom Field Types</legend>
+
+                <div class="form-group">
+                    <h3 class="label">Button Select</h3>
+                    <div class="radio-select">
+                        <div class="option">
+                            <input class="option-control" id="choice-1" type="radio" name="productType" checked>
+                            <label for="choice-1" class="option-label">Choice one</label>
+                        </div>
+                        <div class="option">
+                            <input class="option-control" id="choice-2" type="radio" name="productType">
+                            <label for="choice-2" class="option-label">Choice two</label>
+                        </div>
+                        <div class="option">
+                            <input class="option-control" id="choice-3" type="radio" name="productType">
+                            <label for="choice-3" class="option-label">Choice three</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="label">Checkbox Select</h3>
+                    <div class="radio-select">
+                        <div class="option">
+                            <input class="option-control" id="check-1" type="checkbox" name="checkSelect0" checked>
+                            <label for="check-1" class="option-label">Choice one</label>
+                        </div>
+                        <div class="option">
+                            <input class="option-control" id="check-2" type="checkbox" name="checkSelect1">
+                            <label for="check-2" class="option-label">Choice two</label>
+                        </div>
+                        <div class="option">
+                            <input class="option-control" id="check-3" type="checkbox" name="checkSelect2">
+                            <label for="check-3" class="option-label">Choice three</label>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </article>
+
+</section>

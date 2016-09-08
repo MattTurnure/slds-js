@@ -1,0 +1,190 @@
+$typesetter-horizontal-debug: true;
+$typesetter-browser-context: 16;
+$typesetter-baseline: 24;
+$typesetter-breakpoints: (
+    small: 35.5em,
+    medium: 50em,
+    large: 64em,
+    x-large: 75em
+);
+$typesetter-map: (
+    h1: (
+        default: 24,
+        small: 30,
+        medium: 36,
+        large: 40,
+        x-large: 46
+    ),
+    h2: (
+        default: 22,
+        small: 26,
+        medium: 30,
+        large: 34,
+        x-large: 38
+    ),
+    h3: (
+        default: 20,
+        small: 22,
+        medium: 24,
+        large: 26,
+        x-large: 28
+    ),
+    h4: (
+        default: 18,
+        small: 20,
+        medium: 22,
+        large: 24,
+        x-large: 26
+    ),
+    h5: (
+        default: 16,
+        small: 18,
+        medium: 20,
+        large: 22,
+        x-large: 24
+    ),
+    h6: (
+        default: 14,
+        small: 16,
+        medium: 18,
+        large: 20,
+        x-large: 22
+    ),
+    p: (
+        default: 16,
+        small: 16,
+        medium: 16,
+        large: 16,
+        x-large: 16
+    ),
+    ul: (
+        default: 16,
+        small: 16,
+        medium: 16,
+        large: 16,
+        x-large: 16
+    ),
+    ol: (
+        default: 16,
+        small: 16,
+        medium: 16,
+        large: 16,
+        x-large: 16
+    ),
+    dl: (
+        default: 16,
+        small: 16,
+        medium: 16,
+        large: 16,
+        x-large: 16
+    )
+);
+
+@function rem($pixels, $context: $typesetter-browser-context) {
+    @return #{$pixels/$context}rem;
+}
+
+@mixin repeating-linear-gradient($gradients) {
+    background: -webkit-repeating-linear-gradient( $gradients );
+    background: -moz-repeating-linear-gradient( $gradients );
+    background: -o-repeating-linear-gradient( $gradients );
+}
+
+@mixin gridlines($deg: -90deg, $line-color: #ccc) {
+    $gradients: $deg, transparent, transparent $typesetter-baseline - 1 + px, $line-color $typesetter-baseline + px;
+
+    @if $deg == -90deg {
+        @include repeating-linear-gradient( $gradients );
+        background-size: 100% $typesetter-baseline + px;
+    } @else {
+        @include repeating-linear-gradient( $gradients );
+        background-size: $typesetter-baseline + px 100%;
+        background-position: 50% 100%;
+    }
+}
+
+@mixin setType($font-size: $typesetter-browser-context, $margin: $typesetter-baseline, $line-height: 1) {
+    $base: $typesetter-baseline;
+
+    @if $font-size > $typesetter-baseline {
+        @if $font-size % $typesetter-baseline == 0 {
+            $base: $font-size;
+        } @else {
+            $offset: $font-size % $typesetter-baseline;
+            $base: ($font-size - $offset) + $typesetter-baseline;
+        }
+    }
+
+    font-size: $font-size + px;
+    font-size: rem($font-size);
+    line-height: $base/$font-size;
+
+    @if $margin {
+        margin: $margin + px 0;
+    } @else {
+        margin: $typesetter-baseline + px 0;
+    }
+}
+
+@mixin mediaQuery($min-width) {
+    @media screen and (min-width: #{$min-width}) {
+        @content;
+    }
+}
+
+@mixin setTypographicalRhythm($typeSize: $typesetter-browser-context, $min-width: false) {
+    @if $min-width {
+        @include mediaQuery($min-width) {
+            @include setType($typeSize);
+        }
+    } @else {
+        @include setType($typeSize);
+    }
+}
+
+@mixin setRelativeType() {
+    // Set default sizes
+    ul, ol, dl,
+    td, th, caption,
+    blockquote, pre, var, code,
+    legend, input, textarea, select, label {
+        @include setType(16);
+    }
+
+    @each $selector, $sizes in $typesetter-map {
+        #{$selector}, .#{$selector} {
+            @include setType(map-get($sizes, default));
+        }
+    }
+
+    // Set responsive sizes
+    @each $selector, $sizes in $typesetter-map {
+        #{$selector}, .#{$selector} {
+            @include setTypographicalRhythm(map-get($sizes, small), map-get($typesetter-breakpoints, small));
+        }
+    }
+
+    @each $selector, $sizes in $typesetter-map {
+        #{$selector}, .#{$selector} {
+            @include setTypographicalRhythm(map-get($sizes, medium), map-get($typesetter-breakpoints, medium));
+        }
+    }
+
+    @each $selector, $sizes in $typesetter-map {
+        #{$selector}, .#{$selector} {
+            @include setTypographicalRhythm(map-get($sizes, large), map-get($typesetter-breakpoints, large));
+        }
+    }
+
+    @each $selector, $sizes in $typesetter-map {
+        #{$selector}, .#{$selector} {
+            @include setTypographicalRhythm(map-get($sizes, x-large), map-get($typesetter-breakpoints, x-large));
+        }
+    }
+}
+
+body {
+    @if $typesetter-horizontal-debug {
+        @include gridlines();
+    }
+}
