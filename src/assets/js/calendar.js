@@ -1,9 +1,28 @@
 class SldsCalendar {
     constructor() {
+        this.lang = 'fr';
         this.currentYear = (new Date()).getFullYear();
         this.today = new Date('1/1/' + this.currentYear);
         this.defaultMoment = moment(this.today.valueOf());
-        this.currentMoment = {};
+        this.currentMoment = moment();
+
+        moment.locale(this.lang);
+    }
+
+    getDayLabels() {
+        let ret = [];
+        let thisMoment = moment(this.defaultMoment).startOf('week');
+
+        for (let i = 0; i < 7; i++) {
+            ret.push({
+                full: thisMoment.format('dddd'),
+                short: thisMoment.format('ddd')
+            });
+
+            thisMoment.add(1, 'day');
+        }
+
+        return ret;
     }
 
     getCalendarMonth(date = this.defaultMoment) {
