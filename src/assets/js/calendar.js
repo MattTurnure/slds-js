@@ -2,9 +2,20 @@ class SldsCalendar {
     constructor() {
         moment.locale('en');
 
-        this.defaultMoment = moment().startOf('month');
-        this.currentMoment = moment();
+        this.currentMoment = moment().startOf('month');
         this.dayLabels = this.getDayLabels();
+    }
+
+    renderPreviousMonth() {
+        console.log('renderPreviousMonth');
+        this.getPreviousMonth();
+        this.renderCalendar();
+    }
+
+    renderNextMonth() {
+        console.log('renderNextMonth');
+        this.getNextMonth();
+        this.renderCalendar();
     }
 
     renderCalendar() {
@@ -61,7 +72,7 @@ class SldsCalendar {
 
         options.forEach((item) => {
             html +=
-                `<option value="${item.value}"${+this.defaultMoment.format('YYYY') === item.value ? 'selected' : ''}>${item.label}</option>`;
+                `<option value="${item.value}"${+this.currentMoment.format('YYYY') === item.value ? 'selected' : ''}>${item.label}</option>`;
         });
 
         return html;
@@ -126,7 +137,7 @@ class SldsCalendar {
     }
 
     getYearOptions() {
-        let thisYear = this.defaultMoment.format('YYYY');
+        let thisYear = this.currentMoment.format('YYYY');
         let options = [{
             label: +thisYear - 1,
             value: +thisYear - 1
@@ -143,7 +154,7 @@ class SldsCalendar {
 
     getDayLabels() {
         let ret = [];
-        let thisMoment = moment(this.defaultMoment).startOf('week');
+        let thisMoment = moment(this.currentMoment).startOf('week');
 
         for (let i = 0; i < 7; i++) {
             ret.push({
@@ -157,7 +168,7 @@ class SldsCalendar {
         return ret;
     }
 
-    getCalendarMonth(date = this.defaultMoment) {
+    getCalendarMonth(date = this.currentMoment) {
         this.currentMoment = moment(date);
 
         let now = moment(date);
@@ -214,3 +225,29 @@ class SldsCalendar {
         return weekDays;
     }
 }
+
+// Instantiate
+(() => {
+    let datepickers = document.querySelectorAll('.sldsjs-datepicker');
+    let datepicker;
+
+    let renderDatepicker = container => {
+        datepicker = new SldsCalendar();
+        container.innerHTML += datepicker.renderCalendar();
+    };
+
+    datepickers.forEach(item => {
+        renderDatepicker(item.parentNode);
+    });
+
+    // TODO: get next and previous buttons to redraw calendar
+
+    // document.body.addEventListener('click', e => {
+    //     if (e.target.classList.contains('sldsjs-datepicker-previous') ||
+    //         e.target.parentNode.classList.contains('sldsjs-datepicker-previous') ||
+    //         e.target.parentNode.parentNode.classList.contains('sldsjs-datepicker-previous')) {
+    //         // console.log(e.target, e.currentTarget);
+    //         datepicker.renderPreviousMonth();
+    //     }
+    // });
+})();
