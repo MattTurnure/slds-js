@@ -65,7 +65,8 @@ gulp.task('demo-scripts', function (cb) {
 gulp.task('vendor-scripts', function (cb) {
     pump([
         gulp.src([
-            'node_modules/moment/moment.js'
+            'node_modules/moment/moment.js',
+            'node_modules/moment/locale/*.js'
         ]),
         concat('vendor.js'),
         gulp.dest('dist/assets/vendor/js')
