@@ -20,7 +20,7 @@ class SldsCalendar {
 
     renderCalendar() {
         let calendar =
-            `<div class="slds-datepicker slds-dropdown slds-dropdown--left" aria-hidden="false">
+            `<div class="slds-datepicker slds-dropdown slds-dropdown--left slds-hide" aria-hidden="false">
                 ${this.renderCalendarFilters()}
                 <table class="datepicker__month" role="grid" aria-labelledby="month">
                     ${this.renderCalendarThead()}
@@ -190,7 +190,7 @@ class SldsCalendar {
                 endDay: endOfWeek.format('D'),
                 endMonth: endOfWeek.format('M'),
                 endYear: endOfWeek.format('YYYY'),
-                days: this._getWeekDays(moment(date).format('M'), moment().date(), startOfDays)
+                days: this._getWeekDays(moment(date), moment(), startOfDays)
             });
 
             startOfWeek.add(7, 'days');
@@ -208,7 +208,7 @@ class SldsCalendar {
         return this.getCalendarMonthData(this.currentMoment.subtract(1, 'month'));
     }
 
-    _getWeekDays(currentMonth, thisDay, startMoment = moment()) {
+    _getWeekDays(currentDate, thisMoment, startMoment = moment()) {
         let weekDays = [];
 
         for (let i = 0; i < 7; i++) {
@@ -216,8 +216,8 @@ class SldsCalendar {
                 label: this.dayLabels[i].full,
                 day: +startMoment.format('D'),
                 date: startMoment.format('YYYY-MM-DD'),
-                isCurrentMonth: startMoment.format('M') === currentMonth,
-                isToday: +startMoment.format('D') === thisDay
+                isCurrentMonth: startMoment.format('M') === currentDate.format('M'),
+                isToday: startMoment.format('YYYY-MM-DD') === thisMoment.format('YYYY-MM-DD')
             });
             startMoment = startMoment.add(1, 'day');
         }
@@ -234,6 +234,28 @@ class SldsCalendar {
         console.info('select.options', select.options);
 
         select.value = this.currentMoment.format('YYYY');
+    }
+
+    toggleDatepicker(datepicker) {
+        if (datepicker.classList.contains('slds-hide')) {
+            this.showDatepicker(datepicker);
+        } else {
+            this.hideDatepicker(datepicker);
+        }
+    }
+
+    showDatepicker(datepicker) {
+        datepicker.classList.remove('slds-hide');
+    }
+
+    hideDatepicker(datepicker) {
+        datepicker.classList.add('slds-hide');
+    }
+
+    removeActiveStates(container) {
+        container.querySelectorAll('.slds-is-selected').forEach(item => {
+            item.classList.remove('slds-is-selected');
+        });
     }
 }
 
@@ -268,6 +290,23 @@ class SldsCalendar {
 
             // update calendar month, year, and tbody
             datepicker.updateCalendar(container);
+        });
+
+        container.addEventListener('click', e => {
+            // remove current states
+            datepicker.removeActiveStates(container);
+
+            if (e.target.nodeName.toLowerCase() === 'td') {
+                e.target.classList.add('slds-is-selected');
+            }
+
+            if (e.target.classList.contains('slds-day')) {
+                e.target.parentNode.classList.add('slds-is-selected');
+            }
+        });
+
+        container.querySelector('.sldsjs-datepicker').addEventListener('focus', () => {
+            datepicker.showDatepicker(container.querySelector('.slds-datepicker'));
         });
     };
 
