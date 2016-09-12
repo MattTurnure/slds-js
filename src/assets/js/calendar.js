@@ -4,16 +4,15 @@ class SldsCalendar {
 
         this.currentMoment = moment().startOf('month');
         this.dayLabels = this.getDayHeaderData();
+        this.selectedDate = '';
     }
 
     renderPreviousMonth() {
-        console.log('renderPreviousMonth');
         this.getPreviousMonth();
         this.renderCalendar();
     }
 
     renderNextMonth() {
-        console.log('renderNextMonth');
         this.getNextMonth();
         this.renderCalendar();
     }
@@ -115,7 +114,7 @@ class SldsCalendar {
                 ${html}
                 <tr>
                     <td colspan="7" role="gridcell">
-                        <a href="#" class="slds-show--inline-block slds-p-bottom--x-small">Today</a>
+                        <a role="button" class="slds-show--inline-block slds-p-bottom--x-small sldsjs-today">Today</a>
                     </td>
                 </tr>
             </tbody>`;
@@ -129,7 +128,7 @@ class SldsCalendar {
         data.forEach(item => {
             html +=
                 `<td class="${item.isToday ? 'slds-is-today' : ''}${item.isCurrentMonth ? ' ' : 'slds-disabled-text'}" role="gridcell" aria-selected="false" data-date="${item.date}" data-label="${item.label}">
-                <span class="slds-day">${item.day}</span>
+                <span class="slds-day" data-date="${item.date}">${item.day}</span>
             </td>`;
         });
 
@@ -269,6 +268,8 @@ class SldsCalendar {
         // render calendar
         container.innerHTML += datepicker.renderCalendar();
 
+        let datepickerInput = container.querySelector('.sldsjs-datepicker');
+
         // add event listeners
         container.querySelector('.sldsjs-datepicker-previous').addEventListener('click', () => {
             datepicker.renderPreviousMonth();
@@ -296,23 +297,30 @@ class SldsCalendar {
             // remove current states
             datepicker.removeActiveStates(container);
 
-            if (e.target.nodeName.toLowerCase() === 'td') {
+            if (e.target.nodeName.toLowerCase() === 'td' || e.target.classList.contains('slds-day')) {
                 e.target.classList.add('slds-is-selected');
+                datepicker.selectedDate = e.target.getAttribute('data-date');
             }
 
             if (e.target.classList.contains('slds-day')) {
                 e.target.parentNode.classList.add('slds-is-selected');
+                datepicker.selectedDate = e.target.parentNode.getAttribute('data-date');
             }
+
+            // update date input with selected date
+            datepickerInput.value = datepicker.selectedDate;
         });
 
-        container.querySelector('.sldsjs-datepicker').addEventListener('focus', () => {
+        datepickerInput.addEventListener('focus', () => {
             datepicker.showDatepicker(container.querySelector('.slds-datepicker'));
+        });
+
+        datepickerInput.addEventListener('keyup', () => {
+            datepicker.selectedDate = container.querySelector('.sldsjs-datepicker').value;
         });
     };
 
     datepickers.forEach(item => {
         initializeDatepicker(item.parentNode);
     });
-
-    // TODO: years need to coordinate with current month
 })();
