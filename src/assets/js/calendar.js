@@ -5,6 +5,7 @@ class SldsCalendar {
         this.currentMoment = moment().startOf('month');
         this.dayLabels = this.getDayHeaderData();
         this.selectedDate = '';
+        this.format = 'YYYY-MM-DD';
     }
 
     renderPreviousMonth() {
@@ -17,12 +18,20 @@ class SldsCalendar {
         this.renderCalendar();
     }
 
+    renderToday() {
+        this.getToday();
+        this.renderCalendar();
+    }
+
     renderCalendar() {
         let calendar =
             `<div class="slds-datepicker slds-dropdown slds-dropdown--left slds-hide" aria-hidden="false">
                 ${this.renderCalendarFilters()}
                 <table class="datepicker__month" role="grid" aria-labelledby="month">
                     ${this.renderCalendarThead()}
+                    <tfoot>
+                        ${this.renderTodayButton()}
+                    </tfoot>
                     ${this.renderCalendarTbody()}
                 </table>
             </div>`;
@@ -112,12 +121,18 @@ class SldsCalendar {
         let template =
             `<tbody>
                 ${html}
-                <tr>
-                    <td colspan="7" role="gridcell">
-                        <a role="button" class="slds-show--inline-block slds-p-bottom--x-small sldsjs-today">Today</a>
-                    </td>
-                </tr>
             </tbody>`;
+
+        return template;
+    }
+
+    renderTodayButton() {
+        let template =
+            `<tr>
+            <td colspan="7" role="gridcell">
+                <a role="button" class="slds-show--inline-block slds-p-bottom--x-small sldsjs-today">Today</a>
+            </td>
+        </tr>`;
 
         return template;
     }
@@ -197,6 +212,11 @@ class SldsCalendar {
         }
 
         return ret;
+    }
+
+    getToday() {
+        this.currentMoment = moment().startOf('month');
+        return this.getCalendarMonthData();
     }
 
     getNextMonth() {
@@ -318,6 +338,22 @@ class SldsCalendar {
         datepickerInput.addEventListener('keyup', () => {
             datepicker.selectedDate = container.querySelector('.sldsjs-datepicker').value;
         });
+
+        if (container.querySelector('.sldsjs-today')) {
+            container.querySelector('.sldsjs-today').addEventListener('click', e => {
+                e.preventDefault();
+
+                // update calendar to today and select the date
+                datepicker.renderToday();
+
+                // update calendar month, year, and tbody
+                datepicker.updateCalendar(container);
+
+                // update date input value with today's date
+                datepicker.selectedDate = moment().format(datepicker.format);
+                datepickerInput.value = datepicker.selectedDate;
+            });
+        }
     };
 
     datepickers.forEach(item => {
