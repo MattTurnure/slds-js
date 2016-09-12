@@ -3,7 +3,7 @@ class SldsCalendar {
         moment.locale('en');
 
         this.currentMoment = moment().startOf('month');
-        this.dayLabels = this.getDayLabels();
+        this.dayLabels = this.getDayHeaderData();
     }
 
     renderPreviousMonth() {
@@ -43,7 +43,7 @@ class SldsCalendar {
                             <span class="slds-assistive-text">Previous Month</span>
                         </button>
                     </div>
-                    <h2 id="month" class="slds-align-middle" aria-live="assertive" aria-atomic="true">${this.currentMoment.format('MMMM')}</h2>
+                    <h2 class="slds-align-middle sldsjs-month" aria-live="assertive" aria-atomic="true">${this.currentMoment.format('MMMM')}</h2>
                     <div class="slds-align-middle">
                         <button class="slds-button slds-button--icon-container sldsjs-datepicker-next">
                             <svg aria-hidden="true" class="slds-button__icon">
@@ -54,9 +54,9 @@ class SldsCalendar {
                     </div>
                 </div>
                 <div class="slds-shrink-none">
-                    <label class="slds-assistive-text" for="year">Pick a Year</label>
+                    <label class="slds-assistive-text">Pick a Year</label>
                     <div class="slds-select_container">
-                        <select id="year" class="slds-select">
+                        <select class="slds-select sldsjs-year">
                             ${this.renderCalendarFilterOptions()}
                         </select>
                     </div>
@@ -67,7 +67,7 @@ class SldsCalendar {
     }
 
     renderCalendarFilterOptions() {
-        let options = this.getYearOptions();
+        let options = this.getYearOptionsData();
         let html = '';
 
         options.forEach((item) => {
@@ -79,7 +79,7 @@ class SldsCalendar {
     }
 
     renderCalendarThead() {
-        let headings = this.getDayLabels();
+        let headings = this.getDayHeaderData();
         let html = '';
 
         headings.forEach((item) => {
@@ -100,7 +100,7 @@ class SldsCalendar {
     }
 
     renderCalendarTbody() {
-        let data = this.getCalendarMonth();
+        let data = this.getCalendarMonthData();
         let html = '';
 
         data.forEach(item => {
@@ -136,7 +136,7 @@ class SldsCalendar {
         return html;
     }
 
-    getYearOptions() {
+    getYearOptionsData() {
         let thisYear = this.currentMoment.format('YYYY');
         let options = [{
             label: +thisYear - 1,
@@ -152,7 +152,7 @@ class SldsCalendar {
         return options;
     }
 
-    getDayLabels() {
+    getDayHeaderData() {
         let ret = [];
         let thisMoment = moment(this.currentMoment).startOf('week');
 
@@ -168,7 +168,7 @@ class SldsCalendar {
         return ret;
     }
 
-    getCalendarMonth(date = this.currentMoment) {
+    getCalendarMonthData(date = this.currentMoment) {
         this.currentMoment = moment(date);
 
         let now = moment(date);
@@ -201,11 +201,11 @@ class SldsCalendar {
     }
 
     getNextMonth() {
-        return this.getCalendarMonth(this.currentMoment.add(1, 'month'));
+        return this.getCalendarMonthData(this.currentMoment.add(1, 'month'));
     }
 
     getPreviousMonth() {
-        return this.getCalendarMonth(this.currentMoment.subtract(1, 'month'));
+        return this.getCalendarMonthData(this.currentMoment.subtract(1, 'month'));
     }
 
     _getWeekDays(currentMonth, thisDay, startMoment = moment()) {
@@ -224,30 +224,56 @@ class SldsCalendar {
 
         return weekDays;
     }
+
+    updateCalendar(container) {
+        let select = container.querySelector('.sldsjs-year');
+
+        container.querySelector('.sldsjs-month').innerHTML = this.currentMoment.format('MMMM');
+        container.querySelector('tbody').innerHTML = this.renderCalendarTbody();
+
+        console.info('select.options', select.options);
+
+        select.value = this.currentMoment.format('YYYY');
+    }
 }
 
 // Instantiate
 (() => {
     let datepickers = document.querySelectorAll('.sldsjs-datepicker');
-    let datepicker;
 
-    let renderDatepicker = container => {
-        datepicker = new SldsCalendar();
+    let initializeDatepicker = container => {
+        let datepicker = new SldsCalendar();
+
+        // render calendar
         container.innerHTML += datepicker.renderCalendar();
+
+        // add event listeners
+        container.querySelector('.sldsjs-datepicker-previous').addEventListener('click', () => {
+            datepicker.renderPreviousMonth();
+
+            // update calendar month, year, and tbody
+            datepicker.updateCalendar(container);
+        });
+
+        container.querySelector('.sldsjs-datepicker-next').addEventListener('click', () => {
+            datepicker.renderNextMonth();
+
+            // update calendar month, year, and tbody
+            datepicker.updateCalendar(container);
+        });
+
+        container.querySelector('.sldsjs-year').addEventListener('change', function () {
+            // set to selected year
+            datepicker.currentMoment.year(this.value);
+
+            // update calendar month, year, and tbody
+            datepicker.updateCalendar(container);
+        });
     };
 
     datepickers.forEach(item => {
-        renderDatepicker(item.parentNode);
+        initializeDatepicker(item.parentNode);
     });
 
-    // TODO: get next and previous buttons to redraw calendar
-
-    // document.body.addEventListener('click', e => {
-    //     if (e.target.classList.contains('sldsjs-datepicker-previous') ||
-    //         e.target.parentNode.classList.contains('sldsjs-datepicker-previous') ||
-    //         e.target.parentNode.parentNode.classList.contains('sldsjs-datepicker-previous')) {
-    //         // console.log(e.target, e.currentTarget);
-    //         datepicker.renderPreviousMonth();
-    //     }
-    // });
+    // TODO: years need to coordinate with current month
 })();
