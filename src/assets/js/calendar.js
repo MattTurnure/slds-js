@@ -26,20 +26,20 @@ class SldsCalendar {
     renderCalendar() {
         let calendar =
             `<div class="slds-datepicker slds-dropdown slds-dropdown--left slds-hide" aria-hidden="false">
-                ${this.renderCalendarFilters()}
+                ${this.getCalendarFilterHTML()}
                 <table class="datepicker__month" role="grid" aria-labelledby="month">
-                    ${this.renderCalendarThead()}
+                    ${this.getCalendarTheadHTML()}
                     <tfoot>
-                        ${this.renderTodayButton()}
+                        ${this.getTodayButtonHTML()}
                     </tfoot>
-                    ${this.renderCalendarTbody()}
+                    ${this.getCalendarTbodyHTML()}
                 </table>
             </div>`;
 
         return calendar;
     }
 
-    renderCalendarFilters() {
+    getCalendarFilterHTML() {
         let filters =
             `<div class="slds-datepicker__filter slds-grid">
                 <div class="slds-datepicker__filter--month slds-grid slds-grid--align-spread slds-grow">
@@ -51,7 +51,10 @@ class SldsCalendar {
                             <span class="slds-assistive-text">Previous Month</span>
                         </button>
                     </div>
-                    <h2 class="slds-align-middle sldsjs-month" aria-live="assertive" aria-atomic="true">${this.currentMoment.format('MMMM')}</h2>
+                    <h2 class="slds-align-middle" aria-live="assertive" aria-atomic="true">
+                        <span class="sldsjs-month">${this.currentMoment.format('MMMM')}</span>
+                        <span class="sldsjs-year-label">${this.currentMoment.format('YYYY')}</span>
+                    </h2>
                     <div class="slds-align-middle">
                         <button class="slds-button slds-button--icon-container sldsjs-datepicker-next">
                             <svg aria-hidden="true" class="slds-button__icon">
@@ -86,7 +89,7 @@ class SldsCalendar {
         return html;
     }
 
-    renderCalendarThead() {
+    getCalendarTheadHTML() {
         let headings = this.getDayHeaderData();
         let html = '';
 
@@ -107,7 +110,7 @@ class SldsCalendar {
         return thead;
     }
 
-    renderCalendarTbody() {
+    getCalendarTbodyHTML() {
         let data = this.getCalendarMonthData();
         let html = '';
 
@@ -126,7 +129,7 @@ class SldsCalendar {
         return template;
     }
 
-    renderTodayButton() {
+    getTodayButtonHTML() {
         let template =
             `<tr>
             <td colspan="7" role="gridcell">
@@ -248,7 +251,8 @@ class SldsCalendar {
         let select = container.querySelector('.sldsjs-year');
 
         container.querySelector('.sldsjs-month').innerHTML = this.currentMoment.format('MMMM');
-        container.querySelector('tbody').innerHTML = this.renderCalendarTbody();
+        container.querySelector('.sldsjs-year-label').innerHTML = this.currentMoment.format('YYYY');
+        container.querySelector('tbody').innerHTML = this.getCalendarTbodyHTML();
 
         console.info('select.options', select.options);
 
@@ -289,23 +293,27 @@ class SldsCalendar {
         container.innerHTML += datepicker.renderCalendar();
 
         let datepickerInput = container.querySelector('.sldsjs-datepicker');
+        let datepickerCalendar = container.querySelector('.slds-datepicker');
+        let prevBtn = container.querySelector('.sldsjs-datepicker-previous');
+        let nextBtn = container.querySelector('.sldsjs-datepicker-next');
+        let yearBtn = container.querySelector('.sldsjs-year');
 
         // add event listeners
-        container.querySelector('.sldsjs-datepicker-previous').addEventListener('click', () => {
+        prevBtn.addEventListener('click', () => {
             datepicker.renderPreviousMonth();
 
             // update calendar month, year, and tbody
             datepicker.updateCalendar(container);
         });
 
-        container.querySelector('.sldsjs-datepicker-next').addEventListener('click', () => {
+        nextBtn.addEventListener('click', () => {
             datepicker.renderNextMonth();
 
             // update calendar month, year, and tbody
             datepicker.updateCalendar(container);
         });
 
-        container.querySelector('.sldsjs-year').addEventListener('change', function () {
+        yearBtn.addEventListener('change', function () {
             // set to selected year
             datepicker.currentMoment.year(this.value);
 
@@ -313,18 +321,28 @@ class SldsCalendar {
             datepicker.updateCalendar(container);
         });
 
+        // delegate events
         container.addEventListener('click', e => {
-            // remove current states
-            datepicker.removeActiveStates(container);
+            if (e.target.nodeName.toLowerCase() === 'td') {
+                // remove current states
+                datepicker.removeActiveStates(container);
 
-            if (e.target.nodeName.toLowerCase() === 'td' || e.target.classList.contains('slds-day')) {
                 e.target.classList.add('slds-is-selected');
                 datepicker.selectedDate = e.target.getAttribute('data-date');
+
+                // close datepicker
+                datepicker.hideDatepicker(datepickerCalendar);
             }
 
             if (e.target.classList.contains('slds-day')) {
+                // remove current states
+                datepicker.removeActiveStates(container);
+
                 e.target.parentNode.classList.add('slds-is-selected');
                 datepicker.selectedDate = e.target.parentNode.getAttribute('data-date');
+
+                // close datepicker
+                datepicker.hideDatepicker(datepickerCalendar);
             }
 
             // update date input with selected date
@@ -332,7 +350,7 @@ class SldsCalendar {
         });
 
         datepickerInput.addEventListener('focus', () => {
-            datepicker.showDatepicker(container.querySelector('.slds-datepicker'));
+            datepicker.showDatepicker(datepickerCalendar);
         });
 
         datepickerInput.addEventListener('keyup', () => {
@@ -352,8 +370,16 @@ class SldsCalendar {
                 // update date input value with today's date
                 datepicker.selectedDate = moment().format(datepicker.format);
                 datepickerInput.value = datepicker.selectedDate;
+
+                // add active state to this date
+                container.querySelector('.slds-is-today ').classList.add('slds-is-selected');
+
+                // close datepicker
+                datepicker.hideDatepicker(datepickerCalendar);
             });
         }
+
+        // TODO: close date picker if you click on anywhere but the datepicker calendar area
     };
 
     datepickers.forEach(item => {

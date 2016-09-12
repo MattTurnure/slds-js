@@ -1,7 +1,7 @@
 {
     "undef": true,
     "unused": true,
-    "predef": ["document", "window", "moment", "SldsCalendar"],
+    "predef": ["document", "window", "describe", "it", "moment", "SldsCalendar"],
     "esversion": 6,
     "browser": true,
     "devel": true,
