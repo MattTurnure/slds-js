@@ -96,59 +96,6 @@ class SldsCalendar {
         return weekDays;
     }
 
-    // Actions
-    renderToday() {
-        this.getToday();
-        this.renderCalendar();
-    }
-
-    renderPreviousMonth() {
-        this.getPreviousMonth();
-        this.renderCalendar();
-    }
-
-    renderNextMonth() {
-        this.getNextMonth();
-        this.renderCalendar();
-    }
-
-    updateCalendar(container) {
-        let select = container.querySelector('.sldsjs-year');
-
-        container.querySelector('.sldsjs-month').innerHTML = this.currentMoment.format('MMMM');
-        container.querySelector('.sldsjs-year-label').innerHTML = this.currentMoment.format('YYYY');
-        container.querySelector('tbody').innerHTML = this.getCalendarTbodyHTML();
-
-        select.value = this.currentMoment.format('YYYY');
-    }
-
-    getToday() {
-        this.currentMoment = moment().startOf('month');
-        return this.getCalendarMonthData();
-    }
-
-    getNextMonth() {
-        return this.getCalendarMonthData(this.currentMoment.add(1, 'month'));
-    }
-
-    getPreviousMonth() {
-        return this.getCalendarMonthData(this.currentMoment.subtract(1, 'month'));
-    }
-
-    showDatepicker(datepicker) {
-        datepicker.classList.remove('slds-hide');
-    }
-
-    hideDatepicker(datepicker) {
-        datepicker.classList.add('slds-hide');
-    }
-
-    removeActiveStates(container) {
-        container.querySelectorAll('.slds-is-selected').forEach(item => {
-            item.classList.remove('slds-is-selected');
-        });
-    }
-
     // Templating
     renderCalendar() {
         let calendar =
@@ -278,6 +225,65 @@ class SldsCalendar {
         });
 
         return html;
+    }
+
+    // Actions
+    renderToday() {
+        this.getToday();
+        this.renderCalendar();
+    }
+
+    renderPreviousMonth() {
+        this.getPreviousMonth();
+        this.renderCalendar();
+    }
+
+    renderNextMonth() {
+        this.getNextMonth();
+        this.renderCalendar();
+    }
+
+    updateCalendar(container) {
+        let select = container.querySelector('.sldsjs-year');
+
+        container.querySelector('.sldsjs-month').innerHTML = this.currentMoment.format('MMMM');
+        container.querySelector('.sldsjs-year-label').innerHTML = this.currentMoment.format('YYYY');
+        container.querySelector('tbody').innerHTML = this.getCalendarTbodyHTML();
+
+        select.value = this.currentMoment.format('YYYY');
+    }
+
+    getToday() {
+        this.currentMoment = moment().startOf('month');
+        return this.getCalendarMonthData();
+    }
+
+    getNextMonth() {
+        return this.getCalendarMonthData(this.currentMoment.add(1, 'month'));
+    }
+
+    getPreviousMonth() {
+        return this.getCalendarMonthData(this.currentMoment.subtract(1, 'month'));
+    }
+
+    showDatepicker(datepicker) {
+        datepicker.classList.remove('slds-hide');
+    }
+
+    hideDatepicker(datepicker) {
+        datepicker.classList.add('slds-hide');
+    }
+
+    removeActiveStates(container) {
+        container.querySelectorAll('.slds-is-selected').forEach(item => {
+            item.classList.remove('slds-is-selected');
+        });
+    }
+
+    selectDate(cb) {
+        if (typeof cb === 'function') {
+            cb();
+        }
     }
 }
 
