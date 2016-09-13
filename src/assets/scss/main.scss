@@ -2,6 +2,13 @@
 // @import 'global/_index';
 // @import 'utilities/_index';
 // @import 'components/_index';
-// @import 'third-party/_index';
+
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+}
 
 @import 'node_modules/@salesforce-ux/design-system/scss/index';
+@import 'third-party/_index';

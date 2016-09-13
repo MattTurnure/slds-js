@@ -195,3 +195,10 @@ pre[data-line] {
 	content: attr(data-end);
 	top: auto;
 }
+
+pre[class*="language-"] {
+    ::selection {
+        background: #fff;
+        color: #222;
+    }
+}

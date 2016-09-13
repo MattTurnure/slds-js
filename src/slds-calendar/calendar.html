@@ -1,9 +1,45 @@
-<div class="slds-form-element">
-    <label class="slds-form-element__label" for="input-datepicker">Date</label>
-    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-        <svg aria-hidden="true" class="slds-input__icon slds-icon-text-default">
-            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#event"></use>
-        </svg>
-        <input id="input-datepicker" class="slds-input sldsjs-datepicker" type="text" placeholder="yyyy-mm-dd" />
+<article class="slds-m-vertical--large">
+    <h2 class="slds-text-heading--medium">Date Pickers</h2>
+    <fieldset class="slds-form--compound">
+        <div class="slds-form-element__row">
+            <div class="slds-size--1-of-2 slds-form-element">
+                <label class="slds-form-element__label" for="start-date">Start Date</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
+                    <svg aria-hidden="true" class="slds-input__icon slds-icon-text-default">
+                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#event"></use>
+                    </svg>
+                    <input id="start-date" class="slds-input sldsjs-datepicker" type="text" placeholder="yyyy-mm-dd" />
+                </div>
+            </div>
+            <div class="slds-size--1-of-2 slds-form-element">
+                <label class="slds-form-element__label" for="end-date">End Date</label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
+                    <svg aria-hidden="true" class="slds-input__icon slds-icon-text-default">
+                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#event"></use>
+                    </svg>
+                    <input id="end-date" class="slds-input sldsjs-datepicker" type="text" placeholder="yyyy-mm-dd" />
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="slds-m-vertical--medium">
+        <h3 class="slds-text-heading--small">Implementation</h3>
+        <ol class="slds-list--ordered">
+            <li>Make sure your input is wrapped in an <code>slds-form-element div</code>.</li>
+            <li>Put a class of <code>sldsjs-datepicker</code> on the input.</li>
+            <li>The datepicker will then instantiate.</li>
+        </ol>
+<pre class="language-html"><code class="language-html">
+    &lt;div class="slds-form-element"&gt;
+        &lt;label class="slds-form-element__label" for="start-date"&gt;Start Date&lt;/label&gt;
+        &lt;div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left"&gt;
+            &lt;svg aria-hidden="true" class="slds-input__icon slds-icon-text-default"&gt;
+                &lt;use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#event"&gt;&lt;/use&gt;
+            &lt;/svg&gt;
+            &lt;input id="start-date" class="slds-input sldsjs-datepicker" type="text" placeholder="yyyy-mm-dd" /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
     </div>
-</div>
+</article>

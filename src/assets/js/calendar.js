@@ -1,3 +1,8 @@
+// check to see if this is a Visualforce Page environment in order to get dynamic static resource path
+window.configSettings = Object.assign(window.configSettings || {}, {
+    staticPath: './'
+});
+
 class SldsCalendar {
     constructor() {
         moment.locale('en');
@@ -6,6 +11,95 @@ class SldsCalendar {
         this.dayLabels = this.getDayHeaderData();
         this.selectedDate = '';
         this.format = 'YYYY-MM-DD';
+        this.leftIconPath = window.configSettings.staticPath + 'assets/icons/utility-sprite/svg/symbols.svg#left';
+        this.rightIconPath = window.configSettings.staticPath + 'assets/icons/utility-sprite/svg/symbols.svg#right';
+    }
+
+    getYearOptionsData() {
+        let thisYear = this.currentMoment.format('YYYY');
+        let options = [{
+            label: +thisYear - 1,
+            value: +thisYear - 1
+        }, {
+            label: +thisYear,
+            value: +thisYear
+        }, {
+            label: +thisYear + 1,
+            value: +thisYear + 1
+        }];
+
+        return options;
+    }
+
+    getDayHeaderData() {
+        let ret = [];
+        let thisMoment = moment(this.currentMoment).startOf('week');
+
+        for (let i = 0; i < 7; i++) {
+            ret.push({
+                full: thisMoment.format('dddd'),
+                short: thisMoment.format('ddd')
+            });
+
+            thisMoment.add(1, 'day');
+        }
+
+        return ret;
+    }
+
+    getCalendarMonthData(date = this.currentMoment) {
+        this.currentMoment = moment(date);
+
+        let now = moment(date);
+        let later = moment(date);
+        let nextMonth = moment(date).add(1, 'month');
+        let startOfDays = moment(date).startOf('week');
+        let startOfWeek = now.startOf('week');
+        let endOfWeek = later.startOf('week').add(6, 'days');
+        let totalWeeks = Math.abs(now.diff(nextMonth, 'weeks'));
+        let ret = [];
+
+        for (let i = 0; i <= totalWeeks; i++) {
+            ret.push({
+                currentMonth: moment(date).format('MMMM'),
+                currentYear: moment(date).format('YYYY'),
+                startMonth: startOfWeek.format('M'),
+                startYear: startOfWeek.format('YYYY'),
+                startDay: startOfWeek.format('D'),
+                endDay: endOfWeek.format('D'),
+                endMonth: endOfWeek.format('M'),
+                endYear: endOfWeek.format('YYYY'),
+                days: this.getWeekDays(moment(date), moment(), startOfDays)
+            });
+
+            startOfWeek.add(7, 'days');
+            endOfWeek.add(7, 'days');
+        }
+
+        return ret;
+    }
+
+    getWeekDays(currentDate, thisMoment, startMoment = moment()) {
+        let weekDays = [];
+
+        for (let i = 0; i < 7; i++) {
+            weekDays.push({
+                label: this.dayLabels[i].full,
+                day: +startMoment.format('D'),
+                date: startMoment.format(this.format),
+                isCurrentMonth: startMoment.format('M') === currentDate.format('M'),
+                isToday: startMoment.format(this.format) === thisMoment.format(this.format)
+            });
+            startMoment = startMoment.add(1, 'day');
+        }
+
+        return weekDays;
+    }
+
+    // Actions
+    renderToday() {
+        this.getToday();
+        this.renderCalendar();
     }
 
     renderPreviousMonth() {
@@ -18,11 +112,44 @@ class SldsCalendar {
         this.renderCalendar();
     }
 
-    renderToday() {
-        this.getToday();
-        this.renderCalendar();
+    updateCalendar(container) {
+        let select = container.querySelector('.sldsjs-year');
+
+        container.querySelector('.sldsjs-month').innerHTML = this.currentMoment.format('MMMM');
+        container.querySelector('.sldsjs-year-label').innerHTML = this.currentMoment.format('YYYY');
+        container.querySelector('tbody').innerHTML = this.getCalendarTbodyHTML();
+
+        select.value = this.currentMoment.format('YYYY');
     }
 
+    getToday() {
+        this.currentMoment = moment().startOf('month');
+        return this.getCalendarMonthData();
+    }
+
+    getNextMonth() {
+        return this.getCalendarMonthData(this.currentMoment.add(1, 'month'));
+    }
+
+    getPreviousMonth() {
+        return this.getCalendarMonthData(this.currentMoment.subtract(1, 'month'));
+    }
+
+    showDatepicker(datepicker) {
+        datepicker.classList.remove('slds-hide');
+    }
+
+    hideDatepicker(datepicker) {
+        datepicker.classList.add('slds-hide');
+    }
+
+    removeActiveStates(container) {
+        container.querySelectorAll('.slds-is-selected').forEach(item => {
+            item.classList.remove('slds-is-selected');
+        });
+    }
+
+    // Templating
     renderCalendar() {
         let calendar =
             `<div class="slds-datepicker slds-dropdown slds-dropdown--left slds-hide" aria-hidden="false">
@@ -46,7 +173,7 @@ class SldsCalendar {
                     <div class="slds-align-middle">
                         <button class="slds-button slds-button--icon-container sldsjs-datepicker-previous">
                             <svg aria-hidden="true" class="slds-button__icon">
-                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#left"></use>
+                                <use xlink:href="${this.leftIconPath}"></use>
                             </svg>
                             <span class="slds-assistive-text">Previous Month</span>
                         </button>
@@ -58,7 +185,7 @@ class SldsCalendar {
                     <div class="slds-align-middle">
                         <button class="slds-button slds-button--icon-container sldsjs-datepicker-next">
                             <svg aria-hidden="true" class="slds-button__icon">
-                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#right"></use>
+                                <use xlink:href="${this.rightIconPath}"></use>
                             </svg>
                             <span class="slds-assistive-text">Next Month</span>
                         </button>
@@ -152,139 +279,11 @@ class SldsCalendar {
 
         return html;
     }
-
-    getYearOptionsData() {
-        let thisYear = this.currentMoment.format('YYYY');
-        let options = [{
-            label: +thisYear - 1,
-            value: +thisYear - 1
-        }, {
-            label: +thisYear,
-            value: +thisYear
-        }, {
-            label: +thisYear + 1,
-            value: +thisYear + 1
-        }];
-
-        return options;
-    }
-
-    getDayHeaderData() {
-        let ret = [];
-        let thisMoment = moment(this.currentMoment).startOf('week');
-
-        for (let i = 0; i < 7; i++) {
-            ret.push({
-                full: thisMoment.format('dddd'),
-                short: thisMoment.format('ddd')
-            });
-
-            thisMoment.add(1, 'day');
-        }
-
-        return ret;
-    }
-
-    getCalendarMonthData(date = this.currentMoment) {
-        this.currentMoment = moment(date);
-
-        let now = moment(date);
-        let later = moment(date);
-        let nextMonth = moment(date).add(1, 'month');
-        let startOfDays = moment(date).startOf('week');
-        let startOfWeek = now.startOf('week');
-        let endOfWeek = later.startOf('week').add(6, 'days');
-        let totalWeeks = Math.abs(now.diff(nextMonth, 'weeks'));
-        let ret = [];
-
-        for (let i = 0; i <= totalWeeks; i++) {
-            ret.push({
-                currentMonth: moment(date).format('MMMM'),
-                currentYear: moment(date).format('YYYY'),
-                startMonth: startOfWeek.format('M'),
-                startYear: startOfWeek.format('YYYY'),
-                startDay: startOfWeek.format('D'),
-                endDay: endOfWeek.format('D'),
-                endMonth: endOfWeek.format('M'),
-                endYear: endOfWeek.format('YYYY'),
-                days: this._getWeekDays(moment(date), moment(), startOfDays)
-            });
-
-            startOfWeek.add(7, 'days');
-            endOfWeek.add(7, 'days');
-        }
-
-        return ret;
-    }
-
-    getToday() {
-        this.currentMoment = moment().startOf('month');
-        return this.getCalendarMonthData();
-    }
-
-    getNextMonth() {
-        return this.getCalendarMonthData(this.currentMoment.add(1, 'month'));
-    }
-
-    getPreviousMonth() {
-        return this.getCalendarMonthData(this.currentMoment.subtract(1, 'month'));
-    }
-
-    _getWeekDays(currentDate, thisMoment, startMoment = moment()) {
-        let weekDays = [];
-
-        for (let i = 0; i < 7; i++) {
-            weekDays.push({
-                label: this.dayLabels[i].full,
-                day: +startMoment.format('D'),
-                date: startMoment.format('YYYY-MM-DD'),
-                isCurrentMonth: startMoment.format('M') === currentDate.format('M'),
-                isToday: startMoment.format('YYYY-MM-DD') === thisMoment.format('YYYY-MM-DD')
-            });
-            startMoment = startMoment.add(1, 'day');
-        }
-
-        return weekDays;
-    }
-
-    updateCalendar(container) {
-        let select = container.querySelector('.sldsjs-year');
-
-        container.querySelector('.sldsjs-month').innerHTML = this.currentMoment.format('MMMM');
-        container.querySelector('.sldsjs-year-label').innerHTML = this.currentMoment.format('YYYY');
-        container.querySelector('tbody').innerHTML = this.getCalendarTbodyHTML();
-
-        console.info('select.options', select.options);
-
-        select.value = this.currentMoment.format('YYYY');
-    }
-
-    toggleDatepicker(datepicker) {
-        if (datepicker.classList.contains('slds-hide')) {
-            this.showDatepicker(datepicker);
-        } else {
-            this.hideDatepicker(datepicker);
-        }
-    }
-
-    showDatepicker(datepicker) {
-        datepicker.classList.remove('slds-hide');
-    }
-
-    hideDatepicker(datepicker) {
-        datepicker.classList.add('slds-hide');
-    }
-
-    removeActiveStates(container) {
-        container.querySelectorAll('.slds-is-selected').forEach(item => {
-            item.classList.remove('slds-is-selected');
-        });
-    }
 }
 
 // Instantiate
-(() => {
-    let datepickers = document.querySelectorAll('.sldsjs-datepicker');
+((doc) => {
+    let datepickers = doc.querySelectorAll('.sldsjs-datepicker');
 
     let initializeDatepicker = container => {
         let datepicker = new SldsCalendar();
@@ -321,10 +320,22 @@ class SldsCalendar {
             datepicker.updateCalendar(container);
         });
 
+        // hide the datepicker when clicked anywhere on the document
+        doc.addEventListener('click', () => {
+            datepicker.hideDatepicker(datepickerCalendar);
+        });
+
         // delegate events
         container.addEventListener('click', e => {
+            // prevent the bubble from the document click so datepicker is not closed when clicking the container
+            e.stopPropagation();
+
+            // show the datepicker
+            datepicker.showDatepicker(datepickerCalendar);
+
+            // listen for click events on dates which could be triggered from the spans wrapped around the dates or the tds that contain them
             if (e.target.nodeName.toLowerCase() === 'td') {
-                // remove current states
+                // remove current active states
                 datepicker.removeActiveStates(container);
 
                 e.target.classList.add('slds-is-selected');
@@ -335,7 +346,7 @@ class SldsCalendar {
             }
 
             if (e.target.classList.contains('slds-day')) {
-                // remove current states
+                // remove current active states
                 datepicker.removeActiveStates(container);
 
                 e.target.parentNode.classList.add('slds-is-selected');
@@ -349,6 +360,7 @@ class SldsCalendar {
             datepickerInput.value = datepicker.selectedDate;
         });
 
+        // open datepicker on focus event
         datepickerInput.addEventListener('focus', () => {
             datepicker.showDatepicker(datepickerCalendar);
         });
@@ -360,6 +372,9 @@ class SldsCalendar {
         if (container.querySelector('.sldsjs-today')) {
             container.querySelector('.sldsjs-today').addEventListener('click', e => {
                 e.preventDefault();
+
+                // prevent the bubble from the document click so datepicker is not closed when clicking the container
+                e.stopPropagation();
 
                 // update calendar to today and select the date
                 datepicker.renderToday();
@@ -378,11 +393,9 @@ class SldsCalendar {
                 datepicker.hideDatepicker(datepickerCalendar);
             });
         }
-
-        // TODO: close date picker if you click on anywhere but the datepicker calendar area
     };
 
     datepickers.forEach(item => {
         initializeDatepicker(item.parentNode);
     });
-})();
+})(document);

@@ -20,7 +20,7 @@ var gulp = require('gulp'),
 var sassOptions = {
     defaultEncoding: 'UTF-8',
     lineNumbers: true,
-    outputStyle: 'compressed',
+    outputStyle: 'expanded',
     precision: 8
 };
 
@@ -50,6 +50,16 @@ gulp.task('sass', function () {
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('dist/assets/styles'))
         .pipe(browserSync.stream());
+});
+
+gulp.task('demo-css', function (cb) {
+    pump([
+        gulp.src([
+            'src/assets/scss/third-party/__index.scss'
+        ]),
+        concat('demo.css'),
+        gulp.dest('dist/assets/demo/styles')
+    ], cb);
 });
 
 gulp.task('demo-scripts', function (cb) {
@@ -121,7 +131,7 @@ gulp.task('images', function () {
         .pipe(gulp.dest('dist/assets/images'));
 });
 
-gulp.task('build', ['html', 'sass', 'demo-scripts', 'vendor-scripts', 'scripts', 'video', 'images', 'fonts', 'slds-assets']);
+gulp.task('build', ['html', 'sass', 'demo-css', 'demo-scripts', 'vendor-scripts', 'scripts', 'video', 'images', 'fonts', 'slds-assets']);
 
 gulp.task('default', ['build']);
 
