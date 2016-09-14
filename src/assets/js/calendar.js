@@ -4,7 +4,7 @@ window.configSettings = Object.assign(window.configSettings || {}, {
 });
 
 class SldsCalendar {
-    constructor() {
+    constructor(index) {
         moment.locale('en');
 
         this.currentMoment = moment().startOf('month');
@@ -13,6 +13,7 @@ class SldsCalendar {
         this.format = 'YYYY-MM-DD';
         this.leftIconPath = window.configSettings.staticPath + 'assets/icons/utility-sprite/svg/symbols.svg#left';
         this.rightIconPath = window.configSettings.staticPath + 'assets/icons/utility-sprite/svg/symbols.svg#right';
+        this.index = index;
     }
 
     getYearOptionsData() {
@@ -99,9 +100,9 @@ class SldsCalendar {
     // Templating
     renderCalendar() {
         let calendar =
-            `<div class="slds-datepicker slds-dropdown slds-dropdown--left slds-hide" aria-hidden="false">
+            `<div class="slds-datepicker slds-dropdown slds-dropdown--left slds-hide" aria-hidden="false" id="sldsjs-datepicker-${this.index}">
                 ${this.getCalendarFilterHTML()}
-                <table class="datepicker__month" role="grid" aria-labelledby="month">
+                <table class="datepicker__month" role="grid" aria-labelledby="month" id="sldsjs-datepicker-table-${this.index}">
                     ${this.getCalendarTheadHTML()}
                     <tfoot>
                         ${this.getTodayButtonHTML()}
@@ -115,10 +116,10 @@ class SldsCalendar {
 
     getCalendarFilterHTML() {
         let filters =
-            `<div class="slds-datepicker__filter slds-grid">
+            `<div class="slds-datepicker__filter slds-grid" id="sldsjs-datepicker-filters-${this.index}">
                 <div class="slds-datepicker__filter--month slds-grid slds-grid--align-spread slds-grow">
                     <div class="slds-align-middle">
-                        <button class="slds-button slds-button--icon-container sldsjs-datepicker-previous">
+                        <button class="slds-button slds-button--icon-container sldsjs-datepicker-previous" id="sldsjs-datepicker-previous-month-${this.index}">
                             <svg aria-hidden="true" class="slds-button__icon">
                                 <use xlink:href="${this.leftIconPath}"></use>
                             </svg>
@@ -126,11 +127,11 @@ class SldsCalendar {
                         </button>
                     </div>
                     <h2 class="slds-align-middle" aria-live="assertive" aria-atomic="true">
-                        <span class="sldsjs-month">${this.currentMoment.format('MMMM')}</span>
-                        <span class="sldsjs-year-label">${this.currentMoment.format('YYYY')}</span>
+                        <span class="sldsjs-month" id="sldsjs-datepicker-current-month-${this.index}">${this.currentMoment.format('MMMM')}</span>
+                        <span class="sldsjs-year-label" id="sldsjs-datepicker-current-year-${this.index}">${this.currentMoment.format('YYYY')}</span>
                     </h2>
                     <div class="slds-align-middle">
-                        <button class="slds-button slds-button--icon-container sldsjs-datepicker-next">
+                        <button class="slds-button slds-button--icon-container sldsjs-datepicker-next" id="sldsjs-datepicker-next-month-${this.index}">
                             <svg aria-hidden="true" class="slds-button__icon">
                                 <use xlink:href="${this.rightIconPath}"></use>
                             </svg>
@@ -139,9 +140,9 @@ class SldsCalendar {
                     </div>
                 </div>
                 <div class="slds-shrink-none">
-                    <label class="slds-assistive-text">Pick a Year</label>
+                    <label class="slds-assistive-text" for="sldsjs-datepicker-select-year-${this.index}">Pick a Year</label>
                     <div class="slds-select_container">
-                        <select class="slds-select sldsjs-year">
+                        <select class="slds-select sldsjs-year" id="sldsjs-datepicker-select-year-${this.index}">
                             ${this.renderCalendarFilterOptions()}
                         </select>
                     </div>
@@ -170,8 +171,8 @@ class SldsCalendar {
         headings.forEach((item) => {
             html +=
                 `<th scope="col">
-                <abbr title="${item.full}">${item.short}</abbr>
-            </th>`;
+                     <abbr title="${item.full}">${item.short}</abbr>
+                </th>`;
         });
 
         let thead =
@@ -206,10 +207,10 @@ class SldsCalendar {
     getTodayButtonHTML() {
         let template =
             `<tr>
-            <td colspan="7" role="gridcell">
-                <a role="button" class="slds-show--inline-block slds-p-bottom--x-small sldsjs-today">Today</a>
-            </td>
-        </tr>`;
+                <td colspan="7" role="gridcell">
+                    <a role="button" class="slds-show--inline-block slds-p-bottom--x-small sldsjs-today">Today</a>
+                </td>
+            </tr>`;
 
         return template;
     }
@@ -220,8 +221,8 @@ class SldsCalendar {
         data.forEach(item => {
             html +=
                 `<td class="${item.isToday ? 'slds-is-today' : ''}${item.isCurrentMonth ? ' ' : 'slds-disabled-text'}" role="gridcell" aria-selected="false" data-date="${item.date}" data-label="${item.label}">
-                <span class="slds-day" data-date="${item.date}">${item.day}</span>
-            </td>`;
+                    <span class="slds-day" data-date="${item.date}">${item.day}</span>
+                </td>`;
         });
 
         return html;
@@ -291,8 +292,8 @@ class SldsCalendar {
 ((doc) => {
     let datepickers = doc.querySelectorAll('.sldsjs-datepicker');
 
-    let initializeDatepicker = container => {
-        let datepicker = new SldsCalendar();
+    let initializeDatepicker = (container, index) => {
+        let datepicker = new SldsCalendar(index);
 
         // render calendar
         container.innerHTML += datepicker.renderCalendar();
@@ -401,7 +402,7 @@ class SldsCalendar {
         }
     };
 
-    datepickers.forEach(item => {
-        initializeDatepicker(item.parentNode);
+    datepickers.forEach((item, index) => {
+        initializeDatepicker(item.parentNode, index);
     });
 })(document);
